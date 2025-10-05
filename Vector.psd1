@@ -12,7 +12,7 @@
 RootModule = 'Vector.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '0.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -21,7 +21,7 @@ ModuleVersion = '0.0.1'
 GUID = '2110de70-cbfb-4e01-b273-e7db122a4a53'
 
 # Author of this module
-Author = 'PowerPi'
+Author = 'James Brundage'
 
 # Company or vendor of this module
 CompanyName = 'Start-Automating'
@@ -69,7 +69,7 @@ Description = 'Vectors in PowerShell'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-Vector2', 'Get-Vector3', 'Get-Vector4'
+FunctionsToExport = 'Get-Vector', 'Get-Vector2', 'Get-Vector3', 'Get-Vector4'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
@@ -78,7 +78,7 @@ CmdletsToExport = '*'
 VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'V2', 'V3', 'V4', 'Vector2', 'Vector3', 'Vector4'
+AliasesToExport = 'V1', 'V2', 'V3', 'V4', 'Vector1', 'Vector2', 'Vector3', 'Vector4', 'Vector'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()

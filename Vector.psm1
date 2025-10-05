@@ -29,40 +29,6 @@ if ($home) {
 $script:this = $myModule
 
 #region Custom
-
-foreach ($type in [Numerics.Vector2], [Numerics.Vector3],[Numerics.Vector4]) {
-    $staticMembers = $type | Get-Member -Static
-    $typeData = [Management.Automation.Runspaces.TypeData]::new($type.FullName)
-    foreach ($staticMember in $staticMembers) {
-        if ($staticMember.MemberType -eq 'Method' -and 
-            $staticMember.Definition -match "\($([Regex]::Escape($type.FullName))\s\w+\)"
-        ) {
-            $typeData.Members.Add(
-                $staticMember.Name,
-                [Management.Automation.Runspaces.ScriptMethodData]::new(
-                    $staticMember.Name,
-                    [ScriptBlock]::Create("
-`$invokeArgs = @(`$this) + `$args
-[$($type.FullName -replace '^System\.')]::$($staticMember.Name).Invoke(`$invokeArgs)
-")
-                )                
-            )
-        }
-        if ($staticMember.MemberType -eq 'Property' -and 
-            $staticMember.Definition -match "^$([Regex]::Escape($type.FullName))\s") {
-            <#$typeData.Members.Add(
-                $staticMember.Name,
-                [Management.Automation.Runspaces.ScriptPropertyData]::new(
-                    $staticMember.Name,
-                    [ScriptBlock]::Create("[$($type.FullName -replace '^System\.')]::$($staticMember.Name)")
-                )                
-            )#>
-        }
-
-    }
-    Update-TypeData -TypeData $typeData -Force
-}
-
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = { 
     Remove-TypeData -ErrorAction Ignore -TypeName 'System.Numerics.Vector2'
     Remove-TypeData -ErrorAction Ignore -TypeName 'System.Numerics.Vector3'
@@ -71,5 +37,3 @@ $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
 #endregion Custom
 
 Export-ModuleMember -Alias * -Function * -Variable $myModule.Name
-
-
