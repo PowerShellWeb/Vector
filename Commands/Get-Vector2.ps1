@@ -32,7 +32,9 @@ function Get-Vector2 {
         }
     )
 
+    # If there were no arguments
     if (-not $allIn.Length) {
+        # return the vector type
         return [Numerics.Vector2]
     }
 
