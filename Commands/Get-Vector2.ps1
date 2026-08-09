@@ -32,6 +32,10 @@ function Get-Vector2 {
         }
     )
 
+    if (-not $allIn.Length) {
+        return [Numerics.Vector2]
+    }
+
     # and expand them
     $expandAllIn = @($allIn | Vector)    
 

@@ -32,6 +32,12 @@ function Get-Vector4 {
         }
     )
 
+    # If there were no arguments
+    if (-not $allIn.Length) {
+        # return the vector type
+        return [Numerics.Vector4]
+    }
+
     # and expand them
     $expandAllIn = @($allIn | vector)
     For ($n = 0; $n -lt $expandAllIn.Length; $n+=4) {
