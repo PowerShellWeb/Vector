@@ -24,10 +24,62 @@ function Get-Vector
           * `offset.hours`, `offset.minutes`, `offset.seconds`
         * `[string]s` will return their bytes in the current `$outputEncoding`
         * Anything unknown will be stringified and the bytes will be returned
+    .EXAMPLE
+        # Create a vector out of two numbers
+        Vector2 1 2
+    .EXAMPLE
+        (Vector2 1 2) + (Vector2 2 1)
+    .EXAMPLE
+        (Vector2 1 2) - (Vector2 2 1)
+    .EXAMPLE
+        # Create a thousand vectors
+        $vectors = Vector2 1..2kb
+    .EXAMPLE
+        # Create a thousand vectors in random order, using the pipeline
+        $vectors = 1..2kb | Get-Random -Count 2kb | Vector2
+    .EXAMPLE
+        # Create a vector from a string
+        $vector = Vector2 "hi"    
+    .EXAMPLE
+        # Create a vector out of two numbers
+        Vector3 1 2 3
+    .EXAMPLE
+        (Vector3 1 2 3 ) + (Vector3 3 2 1)
+    .EXAMPLE
+        (Vector3 1 2 3 ) - (Vector3 3 2 1)
+    .EXAMPLE
+        # Create a thousand vectors
+        $vectors = Vector3 1..3kb
+    .EXAMPLE
+        # Create a thousand vectors in random order, using the pipeline
+        $vectors = 1..3kb | Get-Random -Count 3kb | Vector3
+    .EXAMPLE
+        # Create a vector from a string
+        $vector = Vector3 "hi"
+    .EXAMPLE
+        # Create a vector out of four numbers
+        Vector4 1 2 3 4
+    .EXAMPLE
+        (Vector4 1 2 3 4 ) + (Vector4 4 3 2 1 )
+    .EXAMPLE
+        (Vector4 1 2 3 4 ) - (Vector4 4 3 2 1)
+    .EXAMPLE
+        # Create a thousand vectors
+        $vectors = Vector4 1..4kb
+    .EXAMPLE
+        # Create a thousand vectors in random order, using the pipeline
+        $vectors = 1..4kb | Get-Random -Count 4kb | Vector4
+    .EXAMPLE
+        # Create vectors from a string
+        Vector4 "hi"
     #>
-    [Alias('Vector','Vector1','V1')]
+    [Alias('Vector',
+        'Get-Vector1','Vector1','V1',
+        'Get-Vector2','Vector2','V2',
+        'Get-Vector3','Vector3','V3',
+        'Get-Vector4','Vector4','V4'
+    )]
     param()
-
     filter toVector { 
         $arg = $_
         # Return primitive types
@@ -36,7 +88,7 @@ function Get-Vector
             return ($arg -as [float])
         }
         # Return vector components
-        if ($arg -is [ValueType]) {        
+        if ($arg -is [ValueType]) {
             if ($arg -is [Numerics.Vector2]) {
                 return $arg.X,$arg.Y
             }
@@ -115,5 +167,60 @@ function Get-Vector
         }
     )
 
-    return $allIn | toVector
+    $myName = $MyInvocation.InvocationName
+
+    $expandAllIn = @($allIn | toVector)
+
+    if (-not $expandAllIn.Length) {
+        if ($myName -match '2$') {
+            return [Numerics.Vector2]
+        }
+        elseif ($myName -match '3$') {
+            return [Numerics.Vector3]
+        }
+        elseif ($myName -match '4$') {
+            return [Numerics.Vector4]
+        }
+        else {
+            return [Numerics.Vector2],[Numerics.Vector3],[Numerics.Vector4]
+        }
+    }
+    if ($myName -match '[234]$') {
+        $dimension = $matches.0 -as [int]
+        for ($n = 0; $n -lt $expandAllIn.Length; $n+=$dimension) {
+            $nums = $expandAllIn[$n..($n+($dimension-1))] -as [float[]]
+            if ($dimension -eq 2) {
+                if ($nums.Length -eq 1) {
+                    [Numerics.Vector2]::new($nums[0])
+                } else {
+                    [Numerics.Vector2]::new($nums)
+                }
+            } elseif ($dimension -eq 3) {
+                if ($nums.Length -eq 1) {
+                    [Numerics.Vector3]::new($nums[0])
+                }
+                elseif ($nums.Length -eq 2) {
+                    [Numerics.Vector3]::new([Numerics.Vector2]::new($nums[0],$nums[1]), 0)
+                }
+                elseif ($nums.Length -eq 3) {
+                    [Numerics.Vector3]::new($nums)
+                }
+            } elseif ($dimension -eq 4) {
+                if ($nums.Length -eq 1) { 
+                    [Numerics.Vector4]::new($nums[0])
+                }
+                elseif ($nums.Length -eq 2) {
+                    [Numerics.Vector4]::new([Numerics.Vector2]::new($nums[0],$nums[1]), 0, 0)
+                }
+                elseif ($nums.Length -eq 3) {
+                    [Numerics.Vector4]::new([Numerics.Vector3]::new($nums[0],$nums[1],$nums[2]), 0)
+                }
+                elseif ($nums.Length -eq 4) {
+                    [Numerics.Vector4]::new($nums)
+                }            
+            }
+        }       
+    } else {
+        return $allIn | toVector
+    }   
 }
