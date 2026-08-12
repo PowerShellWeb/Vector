@@ -70,6 +70,12 @@
 .EXAMPLE
     # Create vectors from a string
     Vector4 "hi"
+.LINK
+    https://learn.microsoft.com/en-us/dotnet/api/system.numerics.vector2?wt.mc_id=MVP_321542
+.LINK
+    https://learn.microsoft.com/en-us/dotnet/api/system.numerics.vector3?wt.mc_id=MVP_321542
+.LINK
+    https://learn.microsoft.com/en-us/dotnet/api/system.numerics.vector4?wt.mc_id=MVP_321542
 #>
 [Alias('Vector',
     'Get-Vector1','Vector1','V1',
@@ -148,6 +154,22 @@ filter toVector {
         $dateArg.Offset.Hours,$dateArg.Offset.Minutes,$dateArg.Offset.Seconds
         return
     }
+
+    if ($arg -is [Numerics.Matrix3x2]) {
+        $arg.M11,$arg.M12,
+        $arg.M21,$arg.M22,
+        $arg.M31,$arg.M32
+        return
+    }
+
+    if ($arg -is [Numerics.Matrix4x4]) {
+        $arg.M11,$arg.M12,$arg.M13,$arg.M14
+        $arg.M21,$arg.M22,$arg.M23,$arg.M24
+        $arg.M31,$arg.M32,$arg.M33,$arg.M34
+        $arg.M41,$arg.M42,$arg.M43,$arg.M44
+        return
+    }
+
     # If the arg is a string
     if ($arg -is [string]) {
         # return its bytes
