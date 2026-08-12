@@ -210,10 +210,10 @@ Gets a vector in one, two, three, or four dimensions.
 
 This will convert a variety of types into numbers.
 
-`Vector1` will return a list of numbers
-`Vector2` will return a list of `[Numerics.Vector2]`
-`Vector3` will return a list of `[Numerics.Vector3]`
-`Vector4` will return a list of `[Numerics.Vector4]`
+* `Vector1` will return a list of numbers
+* `Vector2` will return a list of `[Numerics.Vector2]`
+* `Vector3` will return a list of `[Numerics.Vector3]`
+* `Vector4` will return a list of `[Numerics.Vector4]`
 
 <details>
 <summary>Notes</summary>
