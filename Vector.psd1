@@ -25,7 +25,7 @@ Author = 'James Brundage'
 CompanyName = 'Start-Automating'
 
 # Copyright statement for this module
-Copyright = '2025 Start-Automating'
+Copyright = '2025-2026 Start-Automating'
 
 # Description of the functionality provided by this module
 Description = 'Vectors in PowerShell'
@@ -67,16 +67,16 @@ Description = 'Vectors in PowerShell'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-Vector', 'Get-Vector2', 'Get-Vector3', 'Get-Vector4'
+FunctionsToExport = 'Get-Vector'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = @('Vector')
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'V1', 'V2', 'V3', 'V4', 'Vector1', 'Vector2', 'Vector3', 'Vector4', 'Vector'
+AliasesToExport = 'Get-Vector2', 'Get-Vector3', 'Get-Vector4', 'V1', 'V2', 'V3', 'V4', 'Vector', 'Vector1', 'Vector2', 'Vector3', 'Vector4'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
