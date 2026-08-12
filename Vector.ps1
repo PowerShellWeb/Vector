@@ -1,10 +1,15 @@
 <#
 .SYNOPSIS
-    Gets a one dimensional vector
+    Gets vectors
 .DESCRIPTION
-    Gets a one dimensional vector (or, more simply, a list of numbers)
+    Gets a vector in one, two, three, or four dimensions.
 
     This will convert a variety of types into numbers.
+
+    `Vector1` will return a list of numbers
+    `Vector2` will return a list of `[Numerics.Vector2]`
+    `Vector3` will return a list of `[Numerics.Vector3]`
+    `Vector4` will return a list of `[Numerics.Vector4]`
 .NOTES
     This attempts to convert any type into a number.
 
@@ -15,6 +20,7 @@
     * `[string]`s that match a range (`$start..$end`) will output that range
     * `[Version]`s will output each numeric component
     * `[semver]`s will output each numeric component, followed by the bytes of a release type
+    * `[Numerics.Matrix3x2]` and `[Numerics.Matrix4x4]` will return the numbers in the matrix
     * `[DateTime]` and `[DateTimeOffset]` will become a series of 12 numbers
         * `year`,`month`,`day`
         * `hour`, `minute`, `second`
