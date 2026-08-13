@@ -40,4 +40,25 @@ describe Vector {
             $divide.Y | Should -Be 1
         }
     }
+
+    context 'Vector Types' {
+        it 'Will return the vector type when no parameters are passed' {
+            vector | Should -BeOfType ([Type])
+        }
+        it 'Will return Vector2 if the name ends in 2' {
+            v2 | Should -Be ([Numerics.Vector2])
+            vector2 | Should -Be ([Numerics.Vector2])
+            Get-Vector2 | Should -Be ([Numerics.Vector2])
+        }
+        it 'Will return Vector3 if the name ends in 3' {
+            v3 | Should -Be ([Numerics.Vector3])
+            vector3 | Should -Be ([Numerics.Vector3])
+            Get-Vector3 | Should -Be ([Numerics.Vector3])
+        }
+        it 'Will return Vector4 if the name ends in 4' {
+            v4 | Should -Be ([Numerics.Vector4])
+            vector4 | Should -Be ([Numerics.Vector4])
+            Get-Vector4 | Should -Be ([Numerics.Vector4])
+        }
+    }
 }

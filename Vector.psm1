@@ -1,39 +1,99 @@
-$commandsPath = Join-Path $PSScriptRoot Commands
-:ToIncludeFiles foreach ($file in (Get-ChildItem -Path "$commandsPath" -Filter "*-*" -Recurse)) {
-    if ($file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
-    foreach ($exclusion in '\.[^\.]+\.ps1$') {
-        if (-not $exclusion) { continue }
-        if ($file.Name -match $exclusion) {
-            continue ToIncludeFiles  # Skip excluded files
+#region Eponym
+
+# Functions and scripts are interchangeable in PowerShell
+# So we can make a small module using an eponym file.
+# First we need to identify the module name 
+$moduleName = $MyInvocation.MyCommand.Name -replace '\.psm1$'
+
+# Once we have done this, we can look for an eponymous script: 
+$eponym = 
+    $ExecutionContext.SessionState.InvokeCommand.GetCommand((
+        Join-Path $PSScriptRoot "$moduleName.ps1"
+    ), 'ExternalScript')
+
+# If we did not find one,
+if (-not $eponym) {
+    # warn and return.
+    Write-Warning "Missing ./$moduleName.ps1"
+    return
+}
+
+# We want to define two functions from this script
+
+# One is the name of the script
+# The other is the "verb" form of the script.
+
+# Collect our list of verbs
+$verbs = Get-Verb | 
+    Sort-Object { $_.Verb.Length }, {$_.Verb } -Descending |
+    Select-Object -ExpandProperty Verb
+    
+# and craft a regex to see if we start with the verb.
+$startsWithVerb = "^(?>$(
+    $verbs -join '|'
+))"
+
+# Our Exports are:
+$exports = 
+    $moduleName, # * The Eponym 
+    $(
+        # The `Verb-Noun` form
+        if ($moduleName -match $startsWithVerb) {
+            "$($matches.0)-$($moduleName -replace "$startsWithVerb\p{P}?")"
+        } else {
+            "Get-$($ModuleName -replace '\p{P}')"
         }
-    }     
-    . $file.FullName
+    )
+
+# We can use the function provider to create functions in this scope.
+foreach ($functionName in $exports) {
+    # This allows us to dynamically set each export to by the eponym
+    $ExecutionContext.SessionState.PSVariable.Set(
+        "function:$functionName",
+        $eponym.ScriptBlock
+    )
 }
 
-$myModule = $MyInvocation.MyCommand.ScriptBlock.Module
-$ExecutionContext.SessionState.PSVariable.Set($myModule.Name, $myModule)
-$myModule.pstypenames.insert(0, $myModule.Name)
-
-New-PSDrive -Name $MyModule.Name -PSProvider FileSystem -Scope Global -Root $PSScriptRoot -ErrorAction Ignore
-
-if ($home) {
-    $MyModuleProfileDirectory = Join-Path ([Environment]::GetFolderPath("LocalApplicationData")) $MyModule.Name
-    if (-not (Test-Path $MyModuleProfileDirectory)) {
-        $null = New-Item -ItemType Directory -Path $MyModuleProfileDirectory -Force
+# We also want to export any aliases
+# and add support for argument completers.
+$argumentCompleter = $null
+$aliasExports = @(
+    # walk over all of our attributes
+    foreach ($attribute in $eponym.ScriptBlock.Attributes) {
+        # and keep track of any argument completers we find.
+        if ($attribute -is [ArgumentCompleter]) {
+            $argumentCompleter = $attribute
+        }
+        # Then make our aliases
+        foreach ($alias in $attribute.aliasNames) {
+            # (unless the alias is already exported as a function)
+            if ($alias -in $exports) { continue }
+            $ExecutionContext.SessionState.PSVariable.Set(
+                "alias:$alias", $moduleName
+            )
+            $alias
+        }
     }
-    New-PSDrive -Name "My$($MyModule.Name)" -PSProvider FileSystem -Scope Global -Root $MyModuleProfileDirectory -ErrorAction Ignore
+)
+
+# If we had an argument completer
+if ($argumentCompleter.ScriptBlock) {
+    # now is the time to register it.
+
+    # Argument completers need to be registered for each function
+    foreach ($functionExport in $exports) {
+        Register-ArgumentCompleter -CommandName $functionExport -ScriptBlock $argumentCompleter.ScriptBlock
+    }
+
+    # and alias
+    foreach ($aliasExport in $aliasExports) {
+        Register-ArgumentCompleter -CommandName $aliasExport -ScriptBlock $argumentCompleter.ScriptBlock
+    }
 }
 
-# Set a script variable of this, set to the module
-# (so all scripts in this scope default to the correct `$this`)
-$script:this = $myModule
+# We will also be exporting our eponym as a variable
+$ExecutionContext.SessionState.PSVariable.Set($moduleName, $eponym)
 
-#region Custom
-$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = { 
-    Remove-TypeData -ErrorAction Ignore -TypeName 'System.Numerics.Vector2'
-    Remove-TypeData -ErrorAction Ignore -TypeName 'System.Numerics.Vector3'
-    Remove-TypeData -ErrorAction Ignore -TypeName 'System.Numerics.Vector4'
-}
-#endregion Custom
-
-Export-ModuleMember -Alias * -Function * -Variable $myModule.Name
+# All that's left to do is explicitly export just these functions.
+Export-ModuleMember -Function $exports -Alias $aliasExports -Variable $moduleName
+#endregion Eponym
