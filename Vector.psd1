@@ -10,7 +10,7 @@
 RootModule = 'Vector.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1'
+ModuleVersion = '0.1.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -93,34 +93,29 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags       = 'PowerShell', 'Vector', 'Math', 'VectorMath'
+        Tags       = 'PowerShell', 'Vector', 'Math'
         # A URL to the main website for this project.
-        ProjectURI = 'https://github.com/PowerShellWeb/Vector'
+        ProjectURI = 'https://github.com/PoshWeb/Vector'
         # A URL to the license for this module.
-        LicenseURI = 'https://github.com/PowerShellWeb/Vector/blob/main/LICENSE'
+        LicenseURI = 'https://github.com/PoshWeb/Vector/blob/main/LICENSE'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-## Vector 0.1:
+## Vector 0.1.1
 
-* Initial Release of Vector module
-* Commands:
-  * Get-Vector (#1)
-  * Get-Vector2 (#2)
-  * Get-Vector3 (#3)
-  * Get-Vector4 (#4)
-* Vector Workflow (#5)
-* Vector Tests (#6)
-* Vector Docs
-  * Demo (#7)
-  * README (#8)
-  * FUNDING (#9)
-  * CODE_OF_CONDUCT (#10)
-  * CONTRIBUTING (#11)
-  * SECURITY (#12)
+* `Vector` is an eponoym (#15)
+  * This module exposes one command with many aliases
+* `Vector` converts `Matrix3x2` and `Matrix4x4` into vectors (#16) 
+* Vectors return their type when provided no input (#14)
+* Added `README.md.ps1` (#17)
+
+---
+
+Additional History in [CHANGELOG](https://github.com/PoshWeb/Vector/blob/main/CHANGELOG.md)
+
 '@
 
         PSIntro = @'

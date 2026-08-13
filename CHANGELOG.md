@@ -1,4 +1,16 @@
-## Vector 0.1:
+# Vector
+
+## Vector 0.1.1
+
+* `Vector` is an eponoym (#15)
+  * This module exposes one command with many aliases
+* `Vector` converts `Matrix3x2` and `Matrix4x4` into vectors (#16) 
+* Vectors return their type when provided no input (#14)
+* Added `README.md.ps1` (#17)
+
+---
+
+## Vector 0.1
 
 * Initial Release of Vector module
 * Commands:
